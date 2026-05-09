@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Partner Login</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Theme -->
+    <link rel="stylesheet" th:href="@{static/css/theme.css}">
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            padding: 3.5rem;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-hover);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            text-align: center;
+        }
+        .login-logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-glow);
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 1.25rem;
+            color: var(--text-light);
+            font-size: 1.25rem;
+            transition: color var(--transition);
+        }
+        .form-group input:focus + i {
+            color: var(--primary);
+        }
+        input {
+            padding-left: 3.25rem !important;
+        }
+    </style>
+</head>
+<body class="app-bg">
+    
+    <!-- Floating Back Button -->
+    <a th:href="@{/}" style="position: absolute; top: 2rem; left: 2rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-main); text-decoration: none; font-family: 'Outfit', sans-serif; font-weight: 700; background: rgba(255, 255, 255, 0.85); padding: 0.75rem 1.25rem; border-radius: 9999px; backdrop-filter: blur(10px); box-shadow: var(--shadow-sm); z-index: 100; transition: all var(--transition);" onmouseover="this.style.transform='translateX(-5px)';" onmouseout="this.style.transform='translateX(0)';">
+        <i class="ph ph-arrow-left"></i> Back to Platform
+    </a>
+
+    <div class="login-card fade-in">
+        <div class="login-logo">
+            <i class="ph-fill ph-leaf"></i>
+        </div>
+        <h2 style="font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; letter-spacing: -0.02em;">Welcome Back</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 2.5rem;">Secure authentication for the AgriSmart Ecosystem.</p>
+
+        <!-- Alerts -->
+        <div th:if="${param.error}" class="alert alert-error">
+            <i class="ph ph-warning-octagon"></i>
+            <span>Invalid email or password.</span>
+        </div>
+
+        <div th:if="${param.logout}" class="alert alert-success">
+            <i class="ph ph-check-circle"></i>
+            <span>Successfully signed out.</span>
+        </div>
+
+        <form th:action="@{/perform_login}" method="post">
+            <div class="form-group">
+                <label style="display: block; font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="ph ph-envelope-simple"></i>
+                    <input type="email" id="username" name="username" placeholder="name@yourfarm.com" required autofocus>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label style="display: block; font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">Security Password</label>
+                <div class="input-wrapper">
+                    <i class="ph ph-lock-key"></i>
+                    <input type="password" id="password" name="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.1rem;">
+                Sign In <i class="ph ph-sign-in" style="margin-left: 0.5rem;"></i>
+            </button>
+        </form>
+
+        <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-subtle);">
+            <p style="font-size: 0.85rem; color: var(--text-light);">
+                Need to establish a farm domain? <br>
+                <a th:href="@{/signup}" style="color: var(--primary); font-weight: 700; text-decoration: none;">Register as Farmer</a>
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>
