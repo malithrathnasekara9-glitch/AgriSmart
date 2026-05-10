@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${worker.id == null ? 'AgriSmart | Add Worker' : 'AgriSmart | Edit Worker'}">AgriSmart | Edit Worker</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2f7f33",
+                        primaryLight: "#4ade80",
+                        slateMain: "#1e293b",
+                        bgSoft: "#f0f4f0"
+                    },
+                    fontFamily: {
+                        sans: ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f0f4f0;
+            background-image:
+                    radial-gradient(at 0% 0%, rgba(47, 127, 51, 0.05) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(74, 222, 128, 0.08) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(47, 127, 51, 0.15);
+        }
+
+        .input-field {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-field:focus {
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(47, 127, 51, 0.1);
+        }
+
+        .floating-blob {
+            position: fixed;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: pulse 8s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body class="antialiased text-slate-800">
+
+<div class="floating-blob w-96 h-96 bg-primary/20 top-0 left-0"></div>
+<div class="floating-blob w-80 h-80 bg-green-300/30 bottom-0 right-0"></div>
+
+<div class="w-full max-w-3xl">
+    <a th:href="@{/labor/workers}" class="inline-flex items-center gap-2 mb-6 text-sm font-bold text-primary hover:gap-3 transition-all group">
+        <span class="material-symbols-rounded text-lg">arrow_back</span>
+        <span>Return to Workers List</span>
+    </a>
+
+    <div class="glass-container rounded-[40px] overflow-hidden">
+        <div class="relative p-10 pb-0 flex items-start justify-between">
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg">
+                        <span class="material-symbols-rounded">edit</span>
+                    </div>
+                    <h2 class="text-3xl font-black text-slateMain tracking-tight" th:text="${worker.id == null ? 'Add Worker' : 'Edit Worker'}">Edit Worker</h2>
+                </div>
+                <p class="text-sm font-medium text-slate-500 max-w-md">Update worker profile details in the AgriSmart labor management system.</p>
+            </div>
+            <div class="text-right hidden sm:block">
+                <span class="text-[10px] font-black text-primary bg-primary/10 px-3 py-1.5 rounded-full uppercase tracking-widest" th:text="${worker.id == null ? 'Create Mode' : 'Update Mode'}">Update Mode</span>
+            </div>
+        </div>
+
+        <form th:action="${worker.id == null} ? @{/labor/workers/save} : @{/labor/workers/update/{id}(id=${worker.id})}" th:object="${worker}" method="post" class="p-10 space-y-8">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                        <span class="material-symbols-rounded text-sm text-primary">badge</span>
+                        Full Name
+                    </label>
+                    <input type="text" th:field="*{fullName}" placeholder="e.g. Malith Rathnasekara"
+                           class="input-field w-full h-14 px-5 rounded-2xl border-slate-200 text-sm font-semibold focus:ring-4 focus:ring-primary/10 focus:border-primary">
+                    <p th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-red-500 text-[11px] font-bold mt-1 px-2"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                        <span class="material-symbols-rounded text-sm text-primary">fingerprint</span>
+                        NIC Identification
+                    </label>
+                    <input type="text" th:field="*{nic}" placeholder="e.g. 199XXXXXXXXX"
+                           class="input-field w-full h-14 px-5 rounded-2xl border-slate-200 text-sm font-semibold focus:ring-4 focus:ring-primary/10 focus:border-primary">
+                    <p th:if="${#fields.hasErrors('nic')}" th:errors="*{nic}" class="text-red-500 text-[11px] font-bold mt-1 px-2"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                        <span class="material-symbols-rounded text-sm text-primary">call</span>
+                        Contact Number
+                    </label>
+                    <input type="text" th:field="*{phone}" placeholder="+94 XX XXX XXXX"
+                           class="input-field w-full h-14 px-5 rounded-2xl border-slate-200 text-sm font-semibold focus:ring-4 focus:ring-primary/10 focus:border-primary">
+                    <p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="text-red-500 text-[11px] font-bold mt-1 px-2"></p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                        <span class="material-symbols-rounded text-sm text-primary">engineering</span>
+                        Operational Role
+                    </label>
+                    <select th:field="*{role}" class="input-field w-full h-14 px-5 rounded-2xl border-slate-200 text-sm font-semibold focus:ring-4 focus:ring-primary/10 focus:border-primary">
+                        <option value="">Select Role Profile</option>
+                        <option value="Harvester">Master Harvester</option>
+                        <option value="Supervisor">Grid Supervisor</option>
+                        <option value="Operations Support">Operations Support</option>
+                        <option value="Driver">Driver</option>
+                    </select>
+                    <p th:if="${#fields.hasErrors('role')}" th:errors="*{role}" class="text-red-500 text-[11px] font-bold mt-1 px-2"></p>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label class="flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest ml-1">
+                    <span class="material-symbols-rounded text-sm text-primary">payments</span>
+                    Daily Remuneration (LKR)
+                </label>
+                <div class="relative">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">LKR</span>
+                    <input type="number" step="0.01" th:field="*{dailyRate}" placeholder="0.00"
+                           class="input-field w-full h-14 pl-16 pr-5 rounded-2xl border-slate-200 text-sm font-bold focus:ring-4 focus:ring-primary/10 focus:border-primary">
+                </div>
+                <p th:if="${#fields.hasErrors('dailyRate')}" th:errors="*{dailyRate}" class="text-red-500 text-[11px] font-bold mt-1 px-2"></p>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4 bg-white/50 p-3 pr-6 rounded-2xl border border-white">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" th:field="*{active}" class="sr-only peer">
+                        <div class="w-14 h-8 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                    <div>
+                        <span class="block text-sm font-black text-slateMain">Active Status</span>
+                        <span class="block text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Enable or disable worker availability</span>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 w-full sm:w-auto">
+                    <a th:href="@{/labor/workers}"
+                       class="w-full sm:w-auto px-8 py-5 bg-white border border-slate-200 text-slate-700 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+                        <span class="material-symbols-rounded">close</span>
+                        Cancel
+                    </a>
+
+                    <button type="submit" class="w-full sm:w-auto px-10 py-5 bg-primary text-white rounded-2xl font-black text-sm flex items-center justify-center gap-3 shadow-xl shadow-primary/20 hover:bg-slateMain hover:scale-105 active:scale-95 transition-all group">
+                        <span class="material-symbols-rounded group-hover:rotate-12 transition-transform">save</span>
+                        <span th:text="${worker.id == null ? 'Save Worker' : 'Update Worker'}">Update Worker</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <p class="mt-8 text-center text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em]">AgriSmart Core Engine v2.0.4</p>
+</div>
+
+</body>
+</html>

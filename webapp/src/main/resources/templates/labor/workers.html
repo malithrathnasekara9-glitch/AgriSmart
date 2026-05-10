@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>AgriSmart - Workers List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/static/css/sidebar.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2f7f33",
+                        bgsoft: "#f6f8f6",
+                        line: "#e6ebe7"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"]
+                    },
+                    boxShadow: {
+                        soft: "0 2px 10px rgba(15, 23, 42, 0.04)"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                    'FILL' 0,
+                    'wght' 400,
+                    'GRAD' 0,
+                    'opsz' 24;
+            vertical-align: middle;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-bgsoft font-sans text-slate-900">
+
+<div class="app-layout">
+    <div th:replace="labor/fragments/sidebar :: sidebar"></div>
+
+    <main class="main-content">
+        <header class="h-20 bg-white border-b border-line px-8 flex items-center justify-between">
+            <div>
+                <h2 class="text-[20px] font-extrabold">Workers List</h2>
+                <div class="flex items-center gap-2 text-[13px] text-slate-400 mt-1">
+                    <span>Labor Management</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span class="text-primary font-semibold">Workers</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <div class="relative w-[340px] max-w-full">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input type="text"
+                           placeholder="Search worker name or NIC..."
+                           class="w-full h-12 rounded-2xl bg-slate-100 border border-slate-100 pl-12 pr-4 text-[15px]">
+                </div>
+
+                <a th:href="@{/labor/workers/add}"
+                   class="h-12 px-6 rounded-2xl bg-primary hover:bg-green-700 text-white font-bold text-[15px] flex items-center gap-2 transition">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    Add Worker
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-8">
+
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-[28px] border border-line p-7 shadow-soft">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[15px] text-slate-500">Total Workers</p>
+                            <h3 class="text-[46px] leading-none font-black mt-3" th:text="${totalWorkers}">0</h3>
+                        </div>
+                        <div class="w-11 h-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-line p-7 shadow-soft">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[15px] text-slate-500">Active Workers</p>
+                            <h3 class="text-[46px] leading-none font-black mt-3" th:text="${activeWorkersCount}">0</h3>
+                        </div>
+                        <div class="w-11 h-11 rounded-2xl bg-green-100 flex items-center justify-center text-green-600">
+                            <span class="material-symbols-outlined">person_check</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-line p-7 shadow-soft">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-[15px] text-slate-500">Inactive Workers</p>
+                            <h3 class="text-[46px] leading-none font-black mt-3" th:text="${inactiveWorkersCount}">0</h3>
+                        </div>
+                        <div class="w-11 h-11 rounded-2xl bg-red-100 flex items-center justify-center text-red-600">
+                            <span class="material-symbols-outlined">person_off</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-[30px] border border-line shadow-soft overflow-hidden">
+                <div class="px-8 py-6 border-b border-line flex items-center justify-between">
+                    <div>
+                        <h3 class="text-[18px] font-extrabold">Workers Directory</h3>
+                        <p class="text-[14px] text-slate-500 mt-1">Manage all registered workers in the labor system.</p>
+                    </div>
+
+                    <a th:href="@{/labor/workers/add}"
+                       class="h-11 px-5 rounded-2xl bg-primary hover:bg-green-700 text-white font-bold text-[14px] flex items-center gap-2 transition">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                        New Worker
+                    </a>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-[12px] uppercase font-extrabold tracking-wide">
+                            <th class="px-8 py-5 text-left">Worker ID</th>
+                            <th class="px-8 py-5 text-left">Full Name</th>
+                            <th class="px-8 py-5 text-left">NIC</th>
+                            <th class="px-8 py-5 text-left">Phone</th>
+                            <th class="px-8 py-5 text-left">Role</th>
+                            <th class="px-8 py-5 text-left">Daily Rate</th>
+                            <th class="px-8 py-5 text-left">Status</th>
+                            <th class="px-8 py-5 text-right">Actions</th>
+                        </tr>
+                        </thead>
+
+                        <tbody class="divide-y divide-line">
+                        <tr th:each="worker : ${workers}" class="hover:bg-slate-50/80 transition">
+                            <td class="px-8 py-5 font-semibold text-slate-500" th:text="'WK-' + ${worker.id}">WK-1</td>
+
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                                        <span class="material-symbols-outlined text-[20px]">person</span>
+                                    </div>
+                                    <span class="font-extrabold text-slate-900" th:text="${worker.fullName}">Worker Name</span>
+                                </div>
+                            </td>
+
+                            <td class="px-8 py-5 text-[15px] text-slate-700" th:text="${worker.nic}">NIC</td>
+                            <td class="px-8 py-5 text-[15px] text-slate-700" th:text="${worker.phone}">0770000000</td>
+                            <td class="px-8 py-5 text-[15px] text-slate-700" th:text="${worker.role}">Worker</td>
+
+                            <td class="px-8 py-5 text-[15px] font-semibold text-slate-900">
+                                <span th:text="|LKR ${#numbers.formatDecimal(worker.dailyRate,1,'COMMA',2,'POINT')}|">LKR 0.00</span>
+                            </td>
+
+                            <td class="px-8 py-5">
+                                <span th:if="${worker.active}"
+                                      class="inline-flex px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-emerald-100 text-emerald-700">
+                                    Active
+                                </span>
+                                <span th:if="${!worker.active}"
+                                      class="inline-flex px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-red-100 text-red-700">
+                                    Inactive
+                                </span>
+                            </td>
+
+                            <td class="px-8 py-5 text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a th:href="@{/labor/workers/edit/{id}(id=${worker.id})}"
+                                       class="w-10 h-10 rounded-xl bg-white border border-line text-slate-500 hover:text-primary hover:border-primary flex items-center justify-center transition">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                    </a>
+
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(workers)}">
+                            <td colspan="8" class="px-8 py-10 text-center text-slate-500 text-[15px]">
+                                No workers found in the system.
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="px-8 py-4 bg-slate-50 flex items-center justify-between">
+                    <p class="text-[13px] text-slate-500">
+                        Showing <span th:text="${#lists.size(workers)}">0</span> workers
+                    </p>
+
+                    <div class="flex gap-2">
+                        <button type="button"
+                                class="px-4 py-2 bg-white border border-line rounded-xl text-[14px] font-medium hover:bg-slate-50">
+                            Previous
+                        </button>
+                        <button type="button"
+                                class="px-4 py-2 bg-white border border-line rounded-xl text-[14px] font-medium hover:bg-slate-50">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-[30px] border border-line shadow-soft p-8">
+                <h3 class="text-[18px] font-extrabold mb-6">Worker Quick Actions</h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                    <a th:href="@{/labor/workers/add}"
+                       class="h-16 rounded-[22px] bg-primary text-white font-extrabold text-[16px] flex items-center justify-center gap-3 hover:bg-green-700 transition">
+                        <span class="material-symbols-outlined">person_add</span>
+                        Add Worker
+                    </a>
+
+                    <a th:href="@{/labor/attendance}"
+                       class="h-16 rounded-[22px] bg-white border border-line text-slate-800 font-extrabold text-[16px] flex items-center justify-center gap-3 hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        Mark Attendance
+                    </a>
+
+                    <a th:href="@{/labor/workers}"
+                       class="h-16 rounded-[22px] bg-white border border-line text-slate-800 font-extrabold text-[16px] flex items-center justify-center gap-3 hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined">visibility</span>
+                        View Workers
+                    </a>
+
+                    <a th:href="@{/labor/reports}"
+                       class="h-16 rounded-[22px] bg-white border border-line text-slate-800 font-extrabold text-[16px] flex items-center justify-center gap-3 hover:bg-slate-50 transition">
+                        <span class="material-symbols-outlined">download</span>
+                        Export Report
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

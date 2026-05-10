@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Attendance</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7f5;
+            padding: 30px;
+        }
+        .card {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            background: #2f7f33;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2f7f33;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h2>Edit Attendance</h2>
+
+    <form th:action="@{/labor/attendance/update}" method="post">
+        <input type="hidden" name="id" th:value="${attendance.id}">
+
+        <label>Select Date</label>
+        <input type="date" name="attendanceDate" th:value="${attendance.attendanceDate}" required>
+
+        <label>Select Worker</label>
+        <select name="workerId" required>
+            <option th:each="worker : ${activeWorkers}"
+                    th:value="${worker.id}"
+                    th:text="${worker.fullName}"
+                    th:selected="${worker.id == attendance.worker.id}">
+            </option>
+        </select>
+
+        <label>Status</label>
+        <select name="status" required>
+            <option th:each="s : ${statuses}"
+                    th:value="${s}"
+                    th:text="${s}"
+                    th:selected="${s == attendance.status}">
+            </option>
+        </select>
+
+        <button type="submit">Update Attendance</button>
+    </form>
+
+    <a th:href="@{/labor/attendance(date=${attendance.attendanceDate})}">Back to Attendance</a>
+</div>
+</body>
+</html>

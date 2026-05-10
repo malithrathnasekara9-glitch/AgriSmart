@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+
+<div th:fragment="sidebar" class="sidebar">
+    <!-- Brand -->
+    <div class="sidebar-brand">
+        <div class="brand-icon">
+            <i class="ph-fill ph-tractor"></i>
+        </div>
+        <div class="brand-text">
+            <h2>AgriSmart</h2>
+            <p>Labor Management</p>
+        </div>
+    </div>
+
+        <div class="sidebar-section-title">LABOR MANAGEMENT</div>
+
+        <a th:href="@{/labor/dashboard}"
+           class="nav-item submenu-item"
+           style="margin-left: -5px; margin-bottom: 5px; padding-left: 20px;"
+           th:classappend="${active == 'dashboard'} ? ' active' : ''">
+            <i class="ph ph-chart-bar nav-icon" style="margin-right: 15px; font-size: 1.25rem;"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <button type="button"
+                class="nav-item nav-item-button"
+                id="laborToggle">
+            <span class="nav-left">
+                <i class="ph ph-users nav-icon" style="font-size: 1.25rem;"></i>
+                <span>Labor Management</span>
+            </span>
+            <span class="toggle-arrow"
+                  th:classappend="${active == 'workers' or active == 'attendance' or active == 'payroll' or active == 'reports'} ? ' rotate' : ''">⌄</span>
+        </button>
+
+        <!-- Sub menu -->
+        <div class="submenu"
+             id="laborSubmenu"
+             th:classappend="${active == 'workers' or active == 'attendance' or active == 'payroll' or active == 'reports'} ? ' open' : ''">
+
+            <a th:href="@{/labor/workers}"
+               class="submenu-item"
+               th:classappend="${active == 'workers'} ? ' active' : ''">
+                <span>Workers</span>
+            </a>
+
+            <a th:href="@{/labor/attendance}"
+               class="submenu-item"
+               th:classappend="${active == 'attendance'} ? ' active' : ''">
+                <span>Attendance</span>
+            </a>
+
+            <a th:href="@{/labor/payroll}"
+               class="submenu-item"
+               th:classappend="${active == 'payroll'} ? ' active' : ''">
+                <span>Payroll</span>
+            </a>
+
+            <a th:href="@{/labor/reports}"
+               class="submenu-item"
+               th:classappend="${active == 'reports'} ? ' active' : ''">
+                <span>Reports</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Bottom Actions -->
+    <div class="sidebar-footer">
+
+        <a th:href="@{/logout}" class="nav-item logout-item">
+            <i class="ph ph-sign-out nav-icon" style="font-size: 1.25rem;"></i>
+            <span>Logout System</span>
+        </a>
+    </div>
+
+    <!-- Sidebar JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.getElementById("laborToggle");
+            const submenu = document.getElementById("laborSubmenu");
+            const arrow = document.querySelector(".toggle-arrow");
+
+            if (toggleBtn && submenu) {
+                toggleBtn.addEventListener("click", function () {
+                    submenu.classList.toggle("open");
+                    if (arrow) {
+                        arrow.classList.toggle("rotate");
+                    }
+                });
+            }
+        });
+    </script>
+</div>
+
+</body>
+</html>
