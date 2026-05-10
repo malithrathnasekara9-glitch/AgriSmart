@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Labor Reports & Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2f7f33",
+                        bgsoft: "#f6f8f6",
+                        line: "#e6ebe7"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body class="bg-bgsoft font-sans text-slate-900">
+
+<div class="app-layout">
+    <div th:replace="labor/fragments/sidebar :: sidebar"></div>
+
+    <main class="main-content">
+        <header class="h-20 bg-white border-b border-line px-8 flex items-center justify-between">
+            <div class="flex items-center gap-6">
+                <h2 class="text-[20px] font-extrabold">Labor Reports & Analytics</h2>
+                <div class="w-px h-8 bg-line"></div>
+                <div class="relative w-[320px]">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input type="text"
+                           placeholder="Search reports..."
+                           class="w-full h-12 rounded-2xl bg-slate-100 border border-slate-100 pl-12 pr-4 text-[15px]">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button class="relative w-11 h-11 rounded-full hover:bg-slate-50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-600">notifications</span>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-white"></span>
+                </button>
+
+                <div class="flex items-center gap-3">
+                    <div class="text-right">
+                        <p class="text-[15px] font-extrabold leading-tight">Haritha Perera</p>
+                        <p class="text-[12px] text-slate-500">Senior Farm Manager</p>
+                    </div>
+                    <div class="w-11 h-11 rounded-full bg-slate-200 flex items-center justify-center">
+                        <span class="material-symbols-outlined">person</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-8 space-y-8">
+
+            <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                <div class="bg-white rounded-[28px] border border-line p-7">
+                    <p class="text-[15px] text-slate-500 mb-4">Monthly Attendance Rate</p>
+                    <div class="flex items-end gap-3">
+                        <h3 class="text-[52px] leading-none font-black"
+                            th:text="|${#numbers.formatDecimal(monthlyAttendanceRate,1,0)}%|">0%</h3>
+                        <span class="text-green-600 font-bold text-[18px]">+3%</span>
+                    </div>
+                    <div class="mt-6 h-2 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full bg-primary"
+                             th:style="'width:' + ${monthlyAttendanceRate} + '%'"></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-line p-7">
+                    <p class="text-[15px] text-slate-500 mb-4">Total Payroll This Month</p>
+                    <h3 class="text-[44px] leading-none font-black text-primary"
+                        th:text="|LKR ${#numbers.formatDecimal(totalPayrollThisMonth,1,'COMMA',0,'POINT')}|">LKR 0</h3>
+                    <p class="text-[13px] text-slate-400 font-semibold mt-4">12.5% OF TOTAL REVENUE</p>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-line p-7">
+                    <p class="text-[15px] text-slate-500 mb-4">Average Daily Wage</p>
+                    <h3 class="text-[44px] leading-none font-black"
+                        th:text="|LKR ${#numbers.formatDecimal(averageDailyWage,1,'COMMA',0,'POINT')}|">LKR 0</h3>
+                    <p class="text-[13px] text-slate-400 font-semibold mt-4">STANDARD INDUSTRY RATE</p>
+                </div>
+
+                <div class="bg-white rounded-[28px] border border-line p-7">
+                    <p class="text-[15px] text-slate-500 mb-4">Total Active Workers</p>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-[52px] leading-none font-black" th:text="${totalActiveWorkers}">0</h3>
+                        <div class="flex -space-x-2">
+                            <div class="w-10 h-10 rounded-full bg-slate-200 border-2 border-white"></div>
+                            <div class="w-10 h-10 rounded-full bg-slate-300 border-2 border-white"></div>
+                            <div class="w-10 h-10 rounded-full bg-green-100 border-2 border-white text-green-700 flex items-center justify-center text-[12px] font-bold">+122</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                <div class="bg-white rounded-[30px] border border-line p-8 min-h-[480px]">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-[18px] font-extrabold">Attendance Trend</h3>
+                            <p class="text-[15px] text-slate-500 mt-1">Attendance data over the last 30 days</p>
+                        </div>
+
+                        <div class="rounded-2xl border border-line px-4 py-3 bg-slate-50">
+                            <p class="text-[14px] font-semibold">Daily Avg:</p>
+                            <p class="text-[22px] font-extrabold text-primary"
+                               th:text="|${#numbers.formatDecimal(monthlyAttendanceRate,1,0)}%|">0%</p>
+                        </div>
+                    </div>
+
+                    <div class="h-[330px] mt-10">
+                        <canvas id="attendanceTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[30px] border border-line p-8 min-h-[480px]">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h3 class="text-[18px] font-extrabold">Monthly Payroll Cost</h3>
+                            <p class="text-[15px] text-slate-500 mt-1">Expenditure trend for last 6 months</p>
+                        </div>
+
+                        <select class="h-11 rounded-2xl border border-line bg-slate-50 px-4 text-[14px] font-semibold">
+                            <option>Last 6 Months</option>
+                        </select>
+                    </div>
+
+                    <div class="h-[330px] mt-10">
+                        <canvas id="payrollTrendChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-[30px] border border-line p-9">
+                <div class="flex flex-wrap gap-4">
+                    <form th:action="@{/labor/reports/export-attendance-pdf}" method="get">
+                        <button type="submit"
+                                class="h-14 px-8 rounded-2xl bg-primary text-white font-bold text-[16px] hover:bg-green-700 transition">
+                            Export Attendance Report (PDF)
+                        </button>
+                    </form>
+
+                    <form th:action="@{/labor/reports/export-payroll-pdf}" method="get">
+                        <button type="submit"
+                                class="h-14 px-8 rounded-2xl border-2 border-primary text-primary font-bold text-[16px] hover:bg-green-50 transition">
+                            Export Payroll Report (PDF)
+                        </button>
+                    </form>
+
+                    <form th:action="@{/labor/reports/export-csv}" method="get">
+                        <button type="submit"
+                                class="h-14 px-8 rounded-2xl border border-line text-slate-700 font-bold text-[16px] hover:bg-slate-50 transition">
+                            Download CSV
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-line flex items-center gap-3 text-slate-400 text-[14px]">
+                    <span class="material-symbols-outlined text-[18px]">info</span>
+                    <span>Reports are generated in real-time based on the latest attendance and payroll records available in the system.</span>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script th:inline="javascript">
+    const attendanceLabels = /*[[${attendanceTrendLabels}]]*/ [];
+    const attendanceValues = /*[[${attendanceTrendValues}]]*/ [];
+
+    const payrollLabels = /*[[${payrollTrendLabels}]]*/ [];
+    const payrollValues = /*[[${payrollTrendValues}]]*/ [];
+
+    const attendanceCanvas = document.getElementById('attendanceTrendChart');
+    if (attendanceCanvas) {
+        new Chart(attendanceCanvas, {
+            type: 'line',
+            data: {
+                labels: attendanceLabels,
+                datasets: [{
+                    label: 'Attendance %',
+                    data: attendanceValues,
+                    borderColor: '#2f7f33',
+                    backgroundColor: 'rgba(47,127,51,0.10)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#2f7f33',
+                    pointBorderColor: '#2f7f33',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+    const payrollCanvas = document.getElementById('payrollTrendChart');
+    if (payrollCanvas) {
+        new Chart(payrollCanvas, {
+            type: 'bar',
+            data: {
+                labels: payrollLabels,
+                datasets: [{
+                    label: 'Payroll Cost',
+                    data: payrollValues,
+                    backgroundColor: '#2f7f33',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

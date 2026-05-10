@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Payroll Management</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:FILL@0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/sidebar.css}">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#2f7f33",
+                        bgsoft: "#f6f8f6",
+                        line: "#e6ebe7"
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "sans-serif"]
+                    },
+                    boxShadow: {
+                        soft: "0 2px 10px rgba(15, 23, 42, 0.04)"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                    'FILL' 0,
+                    'wght' 400,
+                    'GRAD' 0,
+                    'opsz' 24;
+            vertical-align: middle;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-bgsoft font-sans text-slate-900">
+
+<div class="app-layout">
+    <div th:replace="labor/fragments/sidebar :: sidebar"></div>
+
+    <main class="main-content">
+        <header class="h-20 bg-white border-b border-line px-8 flex items-center justify-between">
+            <div>
+                <h2 class="text-[20px] font-extrabold">Payroll Management</h2>
+                <div class="flex items-center gap-2 text-[13px] text-slate-400 mt-1">
+                    <span>Labor Management</span>
+                    <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span class="text-primary font-semibold">Payroll</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <form th:action="@{/labor/payroll/calculate-all}" method="post" class="flex items-center gap-3">
+                    <div class="flex items-center gap-2 bg-slate-100 rounded-2xl px-2 py-1">
+                        <select name="month"
+                                class="bg-transparent border-none text-[15px] font-semibold text-slate-700 focus:ring-0 pr-8">
+                            <option value="1" th:selected="${selectedMonth == 1}">January</option>
+                            <option value="2" th:selected="${selectedMonth == 2}">February</option>
+                            <option value="3" th:selected="${selectedMonth == 3}">March</option>
+                            <option value="4" th:selected="${selectedMonth == 4}">April</option>
+                            <option value="5" th:selected="${selectedMonth == 5}">May</option>
+                            <option value="6" th:selected="${selectedMonth == 6}">June</option>
+                            <option value="7" th:selected="${selectedMonth == 7}">July</option>
+                            <option value="8" th:selected="${selectedMonth == 8}">August</option>
+                            <option value="9" th:selected="${selectedMonth == 9}">September</option>
+                            <option value="10" th:selected="${selectedMonth == 10}">October</option>
+                            <option value="11" th:selected="${selectedMonth == 11}">November</option>
+                            <option value="12" th:selected="${selectedMonth == 12}">December</option>
+                        </select>
+
+                        <select name="year"
+                                class="bg-transparent border-none text-[15px] font-semibold text-slate-700 focus:ring-0 pr-8">
+                            <option th:value="${selectedYear}" th:text="${selectedYear}"></option>
+                            <option th:value="${selectedYear - 1}" th:text="${selectedYear - 1}"></option>
+                            <option th:value="${selectedYear + 1}" th:text="${selectedYear + 1}"></option>
+                        </select>
+                    </div>
+
+                    <button type="submit"
+                            class="h-11 px-6 rounded-2xl bg-primary hover:bg-green-700 text-white font-bold text-[15px] flex items-center gap-2 transition">
+                        <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>
+                        Generate Payroll
+                    </button>
+                </form>
+
+                <div class="w-px h-8 bg-line"></div>
+
+                <button class="relative w-11 h-11 rounded-full hover:bg-slate-50 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-slate-600">notifications</span>
+                    <span class="absolute top-2 right-2 w-2.5 h-2.5 rounded-full bg-red-500 border-2 border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <div class="p-8 flex gap-8">
+            <section class="flex-1 min-w-0 space-y-6">
+
+                <div class="flex items-center justify-between gap-4">
+                    <div class="relative w-[360px] max-w-full">
+                        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                        <input type="text"
+                               placeholder="Search worker ID or name..."
+                               class="w-full h-12 rounded-2xl bg-white border border-line pl-12 pr-4 text-[15px] focus:border-primary focus:ring-primary">
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <form th:action="@{/labor/payroll/calculate-all}" method="post">
+                            <input type="hidden" name="month" th:value="${selectedMonth}">
+                            <input type="hidden" name="year" th:value="${selectedYear}">
+                            <button type="submit"
+                                    class="h-11 px-4 rounded-2xl bg-white border border-line text-[15px] font-semibold text-slate-700 flex items-center gap-2 hover:bg-slate-50">
+                                <span class="material-symbols-outlined text-[18px]">calculate</span>
+                                Calculate All
+                            </button>
+                        </form>
+
+                        <form method="get" th:action="@{/labor/payroll/export-pdf}" style="display:inline;">
+                            <input type="hidden" name="month" th:value="${selectedMonth}">
+                            <input type="hidden" name="year" th:value="${selectedYear}">
+                            <button type="submit"
+                                    class="h-11 px-4 rounded-2xl bg-white border border-line text-[15px] font-semibold text-slate-700 flex items-center gap-2 hover:bg-slate-50">
+                                <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                                Export PDF
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div th:if="${success}" class="mb-4 p-4 rounded-2xl bg-green-50 border border-green-200 text-green-700 text-sm font-bold">
+                    Payroll calculated successfully.
+                </div>
+
+                <div class="bg-white border border-line rounded-[30px] overflow-hidden shadow-soft">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                            <tr class="bg-slate-50 text-slate-500 text-[12px] uppercase font-extrabold tracking-wide">
+                                <th class="px-7 py-5 text-left">Worker ID</th>
+                                <th class="px-7 py-5 text-left">Worker Name</th>
+                                <th class="px-7 py-5 text-left">Present Days</th>
+                                <th class="px-7 py-5 text-left">Daily Rate</th>
+                                <th class="px-7 py-5 text-left">Total Salary</th>
+                                <th class="px-7 py-5 text-left">Status</th>
+                                <th class="px-7 py-5 text-right">Actions</th>
+                            </tr>
+                            </thead>
+
+                            <tbody class="divide-y divide-line">
+                            <tr th:each="row : ${payrollList}" class="hover:bg-slate-50/70">
+                                <td class="px-7 py-5 text-[15px] font-semibold text-slate-500"
+                                    th:text="'AS-' + ${row.worker.id}"></td>
+
+                                <td class="px-7 py-5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-slate-500">
+                                            <span class="material-symbols-outlined text-[20px]">person</span>
+                                        </div>
+                                        <div class="text-[15px] font-extrabold text-slate-900"
+                                             th:text="${row.worker.fullName}"></div>
+                                    </div>
+                                </td>
+
+                                <td class="px-7 py-5 text-[15px] text-slate-700"
+                                    th:text="${row.presentDays}"></td>
+
+                                <td class="px-7 py-5 text-[15px] text-slate-700">
+                                    <span th:text="|LKR ${#numbers.formatDecimal(row.dailyRate,1,'COMMA',2,'POINT')}|"></span>
+                                </td>
+
+                                <td class="px-7 py-5 text-[15px] font-extrabold text-slate-900">
+                                    <span th:text="|LKR ${#numbers.formatDecimal(row.totalSalary,1,'COMMA',2,'POINT')}|"></span>
+                                </td>
+
+                                <td class="px-7 py-5">
+                                    <span th:if="${row.status.toString() == 'PAID'}"
+                                          class="inline-flex px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-emerald-100 text-emerald-700">
+                                        Paid
+                                    </span>
+
+                                    <span th:if="${row.status.toString() == 'PENDING'}"
+                                          class="inline-flex px-3 py-1 rounded-full text-[11px] font-extrabold uppercase bg-amber-100 text-amber-700">
+                                        Pending
+                                    </span>
+                                </td>
+
+                                <td class="px-7 py-5 text-right">
+                                    <div th:if="${row.status.toString() == 'PENDING'}">
+                                        <form th:action="@{/labor/payroll/mark-paid/{id}(id=${row.id})}" method="post">
+                                            <input type="hidden" name="month" th:value="${selectedMonth}">
+                                            <input type="hidden" name="year" th:value="${selectedYear}">
+                                            <button type="submit"
+                                                    class="px-4 py-2 rounded-2xl bg-green-50 text-primary text-[14px] font-extrabold hover:bg-primary hover:text-white transition">
+                                                Mark as Paid
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <button th:if="${row.status.toString() == 'PAID'}"
+                                            type="button"
+                                            class="p-2 text-slate-400 hover:text-primary">
+                                        <span class="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <tr th:if="${#lists.isEmpty(payrollList)}">
+                                <td colspan="7" class="px-7 py-10 text-center text-slate-500 text-[15px]">
+                                    No payroll generated for this month.
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="px-7 py-4 bg-slate-50 flex items-center justify-between">
+                        <p class="text-[13px] text-slate-500">
+                            Showing <span th:text="${#lists.size(payrollList)}"></span> workers
+                        </p>
+                        <div class="flex gap-2">
+                            <button type="button" class="px-4 py-2 bg-white border border-line rounded-xl text-[14px] font-medium hover:bg-slate-50">
+                                Previous
+                            </button>
+                            <button type="button" class="px-4 py-2 bg-white border border-line rounded-xl text-[14px] font-medium hover:bg-slate-50">
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="w-[320px] space-y-6">
+                <div class="bg-primary rounded-[28px] p-7 text-white shadow-lg shadow-green-700/15">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-[14px] font-semibold text-white/80">Total Payroll Cost</span>
+                        <span class="material-symbols-outlined text-white/70">payments</span>
+                    </div>
+
+                    <div class="text-[18px] text-white/90 font-bold mb-1">LKR</div>
+                    <div class="text-[54px] leading-none font-black"
+                         th:text="${#numbers.formatDecimal(totalPayrollCost,1,'COMMA',0,'POINT')}"></div>
+
+                    <p class="mt-6 text-[14px] leading-7 text-white/80 italic">
+                        Payroll is calculated using attendance records and daily wage rate.
+                    </p>
+                </div>
+
+                <div class="bg-white border border-line rounded-[28px] p-7 shadow-soft">
+                    <h3 class="text-[16px] font-extrabold text-slate-900 border-b border-line pb-4">
+                        Payment Summary
+                    </h3>
+
+                    <div class="space-y-5 pt-5">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600">
+                                    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                                </div>
+                                <span class="text-[15px] font-medium text-slate-700">Workers Paid</span>
+                            </div>
+                            <span class="text-[16px] font-extrabold" th:text="${paidCount}"></span>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600">
+                                    <span class="material-symbols-outlined text-[18px]">schedule</span>
+                                </div>
+                                <span class="text-[15px] font-medium text-slate-700">Workers Pending</span>
+                            </div>
+                            <span class="text-[16px] font-extrabold" th:text="${pendingCount}"></span>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary"
+                                 th:style="'width:' + (${paidCount + pendingCount} == 0 ? 0 : (${paidCount} * 100 / (${paidCount + pendingCount}))) + '%'"></div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-3 text-right font-semibold"
+                           th:text="|${paidCount + pendingCount == 0 ? 0 : paidCount * 100 / (paidCount + pendingCount)}% Processed|"></p>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 rounded-[28px] p-7 text-slate-300">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-green-950 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined text-[18px]">info</span>
+                        </div>
+                        <span class="text-[16px] font-extrabold text-white">System Tip</span>
+                    </div>
+
+                    <p class="text-[14px] leading-8">
+                        Last month's average daily rate was LKR 2,350. You are currently 6% above average for the current harvesting season.
+                    </p>
+
+                    <button type="button" class="mt-6 text-primary font-extrabold text-[15px] flex items-center gap-2 hover:text-green-400">
+                        View Detailed Trends
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

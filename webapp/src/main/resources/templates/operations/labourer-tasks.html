@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart - Labourer Tasks</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            /* Light Botanical Luxury Palette */
+            --primary: #42944A;         
+            --primary-hover: #337A3B;
+            --primary-light: #A8D1AE;   
+
+            --bg-page: #F8FCF9;         
+            --bg-surface: #FFFFFF;
+            --bg-raised: #F2F9F3;
+
+            --text-main: #243327;       
+            --text-muted: #627566;
+            --text-light: #A1B3A5;
+
+            --border-color: rgba(66, 148, 74, 0.12);
+            --border-subtle: rgba(66, 148, 74, 0.05);
+
+            --color-green-bg: #F2FAF4;
+
+            --shadow-float: 0 16px 32px -12px rgba(66, 148, 74, 0.08), 0 0 10px rgba(66, 148, 74, 0.02);
+            --shadow-hover: 0 24px 48px -12px rgba(66, 148, 74, 0.12), 0 0 20px rgba(66, 148, 74, 0.04);
+            --shadow-glow: 0 0 20px rgba(66, 148, 74, 0.25);
+
+            --radius-md: 0.75rem;
+            --radius-xl: 1.5rem;
+            --radius-full: 9999px;
+
+            --transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            background-image: radial-gradient(circle at 50% 0%, rgba(168, 209, 174, 0.25) 0%, transparent 50%);
+            color: var(--text-main);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 4rem;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(66, 148, 74, 0.03);
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-icon-simple {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-text-simple h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            height: 100%;
+            margin-left: 3rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-full);
+            transition: all var(--transition);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: rgba(66, 148, 74, 0.05);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+            background: var(--color-green-bg);
+            font-weight: 600;
+            box-shadow: inset 0 0 0 1px rgba(66, 148, 74, 0.1);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .action-icon {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+        }
+
+        .action-icon:hover {
+            background: var(--bg-raised);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-float);
+            border-color: rgba(66, 148, 74, 0.2);
+        }
+
+        .avatar {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all var(--transition);
+        }
+        .avatar:hover {
+            border-color: var(--primary-light);
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .page-title h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .page-title p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .labourer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .labourer-card {
+            background: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-float);
+            border: 1px solid rgba(66, 148, 74, 0.08);
+            transition: all var(--transition);
+        }
+
+        .labourer-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .labourer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .labourer-info h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+        }
+
+        .labourer-info p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .task-count {
+            background: var(--color-green-bg);
+            color: var(--primary);
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .task-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        /* Customize Scrollbar for task-list */
+        .task-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .task-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .task-list::-webkit-scrollbar-thumb {
+            background: rgba(66, 148, 74, 0.2);
+            border-radius: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed var(--border-subtle);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-item-icon {
+            color: var(--primary);
+            font-size: 1.4rem;
+            opacity: 0.8;
+        }
+
+        .task-item-details {
+            flex: 1;
+        }
+
+        .task-name {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .task-status {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .no-tasks {
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 0.95rem;
+            padding: 1rem 0;
+            text-align: center;
+            background: var(--bg-page);
+            border-radius: var(--radius-md);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .labourer-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo-container">
+        <div class="logo-icon-simple">
+            <i class="ph ph-leaf"></i>
+        </div>
+        <div class="logo-text-simple">
+            <h1>AgriSmart</h1>
+        </div>
+    </div>
+
+    <nav class="nav-links">
+        <a href="/tasks">Dashboard</a>
+        <a href="/tasks">Tasks</a>
+        <a href="/labourers" class="active">Labourers</a>
+    </nav>
+
+    <div class="header-actions">
+        <div class="action-icon">
+            <i class="ph ph-bell"></i>
+            <span class="notif-dot" style="position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: #D9A036; border-radius: 50%; box-shadow: 0 0 0 2px var(--bg-surface);"></span>
+        </div>
+        <a href="/profile"><img src="https://i.pravatar.cc/150?img=11" alt="User Avatar" class="avatar"></a>
+    </div>
+</header>
+
+<main>
+    <section class="page-header">
+        <div class="page-title fade-in">
+            <h2>Labourer Workload Overview</h2>
+            <p>View current task assignments grouped by labourer.</p>
+        </div>
+    </section>
+
+    <div class="labourer-grid fade-in" style="animation-delay: 0.1s;">
+        <!-- Iterate over labourers -->
+        <div th:each="labourer : ${labourers}" class="labourer-card">
+            <div class="labourer-header">
+                <div class="labourer-info">
+                    <h3 th:text="${labourer.roleType} + ' - ' + ${labourer.nic}">Role - NIC</h3>
+                    <p th:text="'ID: ' + ${labourer.labourerId}">ID: 1</p>
+                </div>
+                <!-- Task Count Badge -->
+                <div class="task-count" th:text="${labourer.taskCount} + ' assigned'">0 assigned</div>
+            </div>
+            
+            <!-- Tasks List -->
+            <div th:if="${labourer.taskCount > 0}">
+                <ul class="task-list">
+                    <li th:each="task : ${labourer.assignedTasks}" class="task-item">
+                        <i class="ph ph-target task-item-icon"></i>
+                        <div class="task-item-details">
+                            <div class="task-name" th:text="${task.name}">Task Name</div>
+                            <div class="task-status" th:text="${task.type} + ' • ' + ${task.status}">Type • Status</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- No Tasks Placeholder -->
+            <div th:if="${labourer.taskCount == 0}" class="no-tasks">
+                No active task assignments.
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(10px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    });
+</script>
+
+</body>
+</html>
