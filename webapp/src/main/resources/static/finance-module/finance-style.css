@@ -1,0 +1,200 @@
+/* ================================================================
+   AgriSmart — Finance Module CSS
+   Light Botanical Luxury Theme
+   ================================================================ */
+
+:root {
+    --primary:          #42944A;
+    --primary-hover:    #337A3B;
+    --primary-light:    #A8D1AE;
+
+    --bg-page:          #F8FCF9;
+    --bg-surface:       #FFFFFF;
+    --bg-raised:        #F2F9F3;
+
+    --text-main:        #243327;
+    --text-muted:       #627566;
+    --text-light:       #A1B3A5;
+
+    --border-color:     rgba(66, 148, 74, 0.12);
+    --border-subtle:    rgba(66, 148, 74, 0.05);
+
+    --color-red:        #D15B5B;
+    --color-red-bg:     #FDF5F5;
+    --color-green:      #42944A;
+    --color-green-bg:   #F2FAF4;
+    --color-blue:       #5C8EC9;
+    --color-blue-bg:    #F4F8FD;
+
+    --shadow-float:     0 16px 32px -12px rgba(66, 148, 74, 0.08), 0 0 10px rgba(66, 148, 74, 0.02);
+    --shadow-hover:     0 24px 48px -12px rgba(66, 148, 74, 0.12), 0 0 20px rgba(66, 148, 74, 0.04);
+    
+    --radius-md:        0.75rem;
+    --radius-lg:        1.25rem;
+    --radius-xl:        1.5rem;
+    
+    --transition:       0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --sidebar-width:    260px;
+}
+
+/* -- Reset & Base -- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--bg-page);
+    background-image: radial-gradient(circle at 50% 0%, rgba(168, 209, 174, 0.15) 0%, transparent 50%);
+    color: var(--text-main);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; font-weight: 600; }
+
+/* -- Layout -- */
+.app-layout { display: flex; min-height: 100vh; }
+
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content {
+    padding: 2.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* -- Sidebar -- */
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid var(--border-color);
+    position: fixed;
+    top: 0; left: 0;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+}
+
+.logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; margin-bottom: 2.5rem; }
+.logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 1.25rem;
+    box-shadow: 0 8px 16px rgba(66, 148, 74, 0.2);
+}
+.logo-sub { font-family: 'Outfit', sans-serif; font-size: 0.65rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.1em; }
+
+.nav-menu { display: flex; flex-direction: column; gap: 0.4rem; }
+.nav-link {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.8rem 1rem;
+    border-radius: 1rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 500;
+    transition: var(--transition);
+}
+.nav-link i { font-size: 1.2rem; }
+.nav-link:hover { background: var(--bg-raised); color: var(--primary); }
+.nav-link.active { background: var(--primary); color: white; box-shadow: 0 8px 20px rgba(66, 148, 74, 0.2); }
+
+/* -- Top Header -- */
+.top-header {
+    height: 80px;
+    padding: 0 2.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky; top: 0; z-index: 90;
+}
+
+.topbar-title { font-size: 1.1rem; font-weight: 600; color: var(--text-main); }
+.topbar-sub { display: flex; align-items: center; gap: 0.5rem; margin-top: 2px; }
+.live-dot { width: 6px; height: 6px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 0 3px rgba(66, 148, 74, 0.2); }
+.topbar-sub-text { font-size: 0.75rem; color: var(--text-light); font-weight: 500; }
+
+.user-profile { display: flex; align-items: center; gap: 1rem; }
+.avatar { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; border: 2px solid white; box-shadow: var(--shadow-float); }
+
+/* -- Cards & Panels -- */
+.content-panel {
+    background: var(--bg-surface);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-float);
+    border: 1px solid var(--border-subtle);
+    margin-bottom: 1.5rem;
+}
+
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2rem; }
+.stat-card {
+    background: var(--bg-surface);
+    padding: 1.75rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-float);
+    position: relative; overflow: hidden;
+}
+.stat-card::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+}
+.stat-card.income::after { background: var(--primary); }
+.stat-card.expense::after { background: var(--color-red); }
+.stat-card.balance::after { background: var(--color-blue); }
+
+.stat-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.stat-value { font-family: 'Outfit', sans-serif; font-size: 1.75rem; font-weight: 700; color: var(--text-main); }
+
+/* -- Tables -- */
+.table-container { overflow-x: auto; margin-top: 1rem; }
+.data-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+.data-table th {
+    padding: 1rem; text-align: left;
+    font-size: 0.75rem; font-weight: 700; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.data-table td { padding: 1.25rem 1rem; font-size: 0.9rem; border-bottom: 1px solid var(--border-subtle); transition: var(--transition); }
+.data-table tr:hover td { background: var(--bg-raised); }
+
+.badge {
+    padding: 0.4rem 0.8rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 600;
+}
+.badge-income { background: var(--color-green-bg); color: var(--color-green); }
+.badge-expense { background: var(--color-red-bg); color: var(--color-red); }
+
+/* -- Buttons -- */
+.btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.5rem; border-radius: 1rem;
+    font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 600;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: var(--transition);
+}
+.btn-primary { background: var(--primary); color: white; box-shadow: 0 8px 16px rgba(66, 148, 74, 0.15); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(66, 148, 74, 0.25); }
+.btn-outline { background: white; color: var(--text-muted); border: 1px solid var(--border-color); }
+.btn-outline:hover { background: var(--bg-raised); color: var(--primary); border-color: var(--primary); }
+
+/* -- Forms -- */
+.form-group { margin-bottom: 1.5rem; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+.form-control {
+    width: 100%; padding: 0.8rem 1rem; border-radius: 0.8rem;
+    border: 1px solid var(--border-color); background: var(--bg-page);
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text-main);
+    transition: var(--transition);
+}
+.form-control:focus { outline: none; border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(66, 148, 74, 0.1); }

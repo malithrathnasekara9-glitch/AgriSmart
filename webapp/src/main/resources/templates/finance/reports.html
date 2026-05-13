@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Financial Reports</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" th:href="@{/static/finance-module/finance-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="/finance/home" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Finance Module</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/finance/home" class="nav-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a th:href="@{/finance/transactions(farmerId=${farmerId},plotId=${plotId})}" class="nav-link"><i class="ph ph-arrows-left-right"></i> Transactions</a>
+            <a th:href="@{/finance/reports(farmerId=${farmerId},plotId=${plotId})}" class="nav-link active"><i class="ph ph-chart-pie-slice"></i> Financial Reports</a>
+            <div style="margin-top:auto; padding-top:2rem;">
+                <div class="logo-sub" style="margin-bottom:0.5rem; padding-left:1rem;">Account</div>
+                <form th:action="@{/logout}" method="post" style="display:contents;">
+                    <button type="submit" class="nav-link" style="width:100%; border:none; background:none; cursor:pointer; color:var(--color-red);">
+                        <i class="ph ph-sign-out"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title">Financial Performance Reports</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Year-to-Date Analytics</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="user-info" style="text-align:right; margin-right:1rem;">
+                    <div style="font-size:0.85rem; font-weight:600; color:var(--text-main);" th:text="${farmerName}">Asset Manager</div>
+                    <div style="font-size:0.7rem; font-weight:500; color:var(--text-light);">Finance Specialist</div>
+                </div>
+                <img th:src="'https://ui-avatars.com/api/?name=' + ${farmerName} + '&background=42944A&color=fff'" alt="Profile" class="avatar">
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <div style="margin-bottom:2.5rem;">
+                <h1 style="font-size:2rem; margin-bottom:0.5rem;">Analytical Overview</h1>
+                <p style="color:var(--text-muted);">Visualized breakdown of cash flows and expenditure distribution across the current fiscal year.</p>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card balance">
+                    <div class="stat-label">Calculated Profit</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalIncome.subtract(summary.totalExpense)}">$0.00</div>
+                </div>
+                <div class="stat-card income">
+                    <div class="stat-label">Aggregated Revenue</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalIncome}">$0.00</div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="stat-label">Aggregated Costs</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalExpense}">$0.00</div>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1.5fr 1fr; gap:1.5rem;">
+                <div class="content-panel" style="padding:2rem;">
+                    <h2 style="font-size:1.2rem; margin-bottom:2rem;"><i class="ph ph-chart-line" style="color:var(--primary); margin-right:0.5rem;"></i> Cash Flow Dynamics</h2>
+                    <canvas id="cashFlowChart" height="200"></canvas>
+                </div>
+                <div class="content-panel" style="padding:2rem;">
+                    <h2 style="font-size:1.2rem; margin-bottom:2rem;"><i class="ph ph-chart-donut" style="color:var(--primary); margin-right:0.5rem;"></i> Expense Profiling</h2>
+                    <canvas id="expenseBreakdownChart" height="280"></canvas>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    const transactions = JSON.parse(/*[[${transactionsJson}]]*/ "[]");
+    
+    function parseTxDate(v) {
+        if (!v) return null;
+        if (typeof v === "string") { const d = new Date(v + "T00:00:00"); return isNaN(d) ? null : d; }
+        if (Array.isArray(v) && v.length >= 3) { const d = new Date(v[0], v[1] - 1, v[2]); return isNaN(d) ? null : d; }
+        if (typeof v === "object" && v.year && (v.monthValue || v.month) && (v.dayOfMonth || v.day)) {
+            const month = v.monthValue ? v.monthValue : v.month;
+            const day = v.dayOfMonth ? v.dayOfMonth : v.day;
+            const d = new Date(v.year, month - 1, day);
+            return isNaN(d) ? null : d;
+        }
+        return null;
+    }
+
+    const currentYear = new Date().getFullYear();
+    const labels = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const income = new Array(12).fill(0);
+    const expense = new Array(12).fill(0);
+    const expenseBreakdown = {};
+
+    for (const t of transactions) {
+        const d = parseTxDate(t.transactionDate);
+        if (!d || d.getFullYear() !== currentYear) continue;
+        const m = d.getMonth();
+        const cat = String(t.category || "").trim().toLowerCase();
+        const amt = Number(t.amount) || 0;
+        if (cat === "income") income[m] += amt;
+        if (cat === "expense") {
+            expense[m] += amt;
+            const key = (t.description && t.description.trim()) ? t.description.trim() : "Operation Costs";
+            expenseBreakdown[key] = (expenseBreakdown[key] || 0) + amt;
+        }
+    }
+
+    const ctxLine = document.getElementById("cashFlowChart").getContext("2d");
+    new Chart(ctxLine, {
+        type: "line",
+        data: {
+            labels,
+            datasets: [
+                { 
+                    label: "Revenue Stream", 
+                    data: income, 
+                    borderColor: "#42944A", 
+                    backgroundColor: "rgba(66,148,74,0.08)", 
+                    fill: true, 
+                    tension: 0.4,
+                    pointBackgroundColor: "#42944A",
+                    pointBorderColor: "#fff",
+                    pointRadius: 4
+                },
+                { 
+                    label: "Operational Costs", 
+                    data: expense, 
+                    borderColor: "#D15B5B", 
+                    backgroundColor: "rgba(209,91,91,0.08)", 
+                    fill: true, 
+                    tension: 0.4,
+                    pointBackgroundColor: "#D15B5B",
+                    pointBorderColor: "#fff",
+                    pointRadius: 4
+                }
+            ]
+        },
+        options: { 
+            responsive: true,
+            plugins: { legend: { position: 'bottom', labels: { font: { family: 'Outfit', weight: '500' } } } },
+            scales: {
+                y: { grid: { color: 'rgba(66,148,74,0.05)' }, ticks: { font: { family: 'DM Sans' } } },
+                x: { grid: { display: false }, ticks: { font: { family: 'DM Sans' } } }
+            }
+        }
+    });
+
+    const entries = Object.entries(expenseBreakdown).sort((a,b) => b[1]-a[1]).slice(0,6);
+    const labels2 = entries.length ? entries.map(e => e[0]) : ["No Data Recorded"];
+    const values2 = entries.length ? entries.map(e => e[1]) : [1];
+    const colors2 = ["#42944A", "#A8D1AE", "#5C8EC9", "#D9A036", "#D15B5B", "#627566"];
+
+    const ctxPie = document.getElementById("expenseBreakdownChart").getContext("2d");
+    new Chart(ctxPie, {
+        type: "doughnut",
+        data: { labels: labels2, datasets: [{ data: values2, backgroundColor: colors2, borderJoinStyle: 'round', borderRadius: 5, borderDashOffset: 2 }] },
+        options: { 
+            responsive: true,
+            cutout: '65%',
+            plugins: { legend: { position: 'bottom', labels: { font: { family: 'Outfit', size: 11 } } } }
+        }
+    });
+</script>
+
+</body>
+</html>
