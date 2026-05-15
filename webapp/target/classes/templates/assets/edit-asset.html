@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Edit Asset Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/assets-module/assets-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/assets" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Assets Module</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/assets" class="nav-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="/assets/register" class="nav-link"><i class="ph ph-plus-circle"></i> Register Asset</a>
+            <a href="#" class="nav-link" id="nav-details-link" onclick="alert('Select an asset from the dashboard first.'); return false;"><i class="ph ph-info"></i> Details</a>
+            <a href="#" class="nav-link active" id="nav-edit-link"><i class="ph ph-pencil-simple"></i> Edit Details</a>
+            <a href="#" class="nav-link" id="nav-maint-link" onclick="alert('Select an asset from the dashboard.'); return false;"><i class="ph ph-wrench"></i> Maintenance</a>
+            <a href="#" class="nav-link" id="nav-decomm-link" onclick="alert('Select an asset from the dashboard.'); return false;"><i class="ph ph-x-square"></i> Decommission</a>
+            <div class="nav-section-label" style="margin-top:auto;">Account</div>
+            <a href="/assets/profile" class="nav-link"><i class="ph ph-user-circle"></i> My Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:contents;">
+                <button type="submit" class="nav-link nav-logout"><i class="ph ph-sign-out"></i> Logout</button>
+            </form>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title">Edit Asset Details</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Asset Management</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="notification-icon"><i class="ph ph-bell"></i><span class="badge"></span></div>
+                <div class="user-info">
+                    <span class="user-name">Asset Manager</span>
+                    <span class="user-role">Farm Operations</span>
+                </div>
+                <a href="/assets/profile"><img src="https://ui-avatars.com/api/?name=Asset+Manager&background=42944A&color=fff" alt="Profile" class="avatar"></a>
+            </div>
+        </header>
+
+        <main class="page-content">
+            <div class="page-header-flex">
+                <div class="header-icon-container"><i class="ph ph-pencil-simple"></i></div>
+                <div class="header-titles">
+                    <div class="header-eyebrow">Fleet Management</div>
+                    <h1>Edit Asset Details</h1>
+                    <p id="edit-page-subtitle">Update information for the selected asset.</p>
+                </div>
+            </div>
+
+            <div class="content-panel form-panel">
+                <form id="edit-asset-form-page">
+                    <input type="hidden" id="edit-asset-id">
+
+                    <h4 class="form-section-title">Basic Information</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-type">Asset Type <span class="required">*</span></label>
+                            <select id="edit-type" class="form-control select-dropdown" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option value="Tractor">Tractor</option>
+                                <option value="Harvester">Harvester</option>
+                                <option value="Truck">Truck</option>
+                                <option value="Implement">Implement</option>
+                                <option value="Irrigation">Irrigation Equipment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-model">Model Name <span class="required">*</span></label>
+                            <input type="text" id="edit-model" class="form-control" placeholder="e.g. John Deere 8R 410" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-sn">Serial Number / VIN <span class="required">*</span></label>
+                        <input type="text" id="edit-sn" class="form-control" placeholder="Enter 17-digit identification number" required>
+                    </div>
+
+                    <h4 class="form-section-title mt-4">Timeline &amp; Financials</h4>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-purchase">Purchase Date</label>
+                            <input type="date" id="edit-purchase" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-warranty">Warranty End Date</label>
+                            <input type="date" id="edit-warranty" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-cost">Initial Cost (USD)</label>
+                            <div class="input-with-icon prefix-icon">
+                                <span class="icon">$</span>
+                                <input type="number" id="edit-cost" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-manager">Assigned Manager</label>
+                            <select id="edit-manager" class="form-control select-dropdown">
+                                <option value="">Select Manager</option>
+                                <!-- Populated by JS -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <a href="/assets" class="btn btn-outline"><i class="ph ph-arrow-left"></i> Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="ph ph-check-circle"></i> Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/static/assets-module/assets-api.js}"></script>
+</body>
+</html>
