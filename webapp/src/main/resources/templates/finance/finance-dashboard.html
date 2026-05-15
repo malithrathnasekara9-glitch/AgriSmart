@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Master Finance Ledger</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/finance-module/finance-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="/finance/home" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Finance Master</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/finance/home" class="nav-link active"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a th:href="@{/finance/transactions(farmerId=${farmerId},plotId=${plotId})}" class="nav-link"><i class="ph ph-arrows-left-right"></i> Transactions</a>
+            <a th:href="@{/finance/reports(farmerId=${farmerId},plotId=${plotId})}" class="nav-link"><i class="ph ph-chart-pie-slice"></i> Financial Reports</a>
+            <div style="margin-top:auto; padding-top:2rem;">
+                <div class="logo-sub" style="margin-bottom:0.5rem; padding-left:1rem;">Account</div>
+                <form th:action="@{/logout}" method="post" style="display:contents;">
+                    <button type="submit" class="nav-link" style="width:100%; border:none; background:none; cursor:pointer; color:var(--color-red);">
+                        <i class="ph ph-sign-out"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title">Global Financial Dashboard</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Aggregated Multi-Plot Audit</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="user-info" style="text-align:right; margin-right:1rem;">
+                    <div style="font-size:0.85rem; font-weight:600; color:var(--text-main);" th:text="${farmerName}">System Admin</div>
+                    <div style="font-size:0.7rem; font-weight:500; color:var(--text-light);">Master Financial Manager</div>
+                </div>
+                <img th:src="'https://ui-avatars.com/api/?name=Admin&background=42944A&color=fff'" alt="Profile" class="avatar">
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:2.5rem;">
+                <div>
+                    <h1 style="font-size:2rem; margin-bottom:0.5rem;">System-Wide Ledger</h1>
+                    <p style="color:var(--text-muted);">Master overview of income and expenses across all registered agricultural land plots.</p>
+                </div>
+                <div style="display:flex; gap:1rem;">
+                    <a th:href="@{/finance/transactions/new(farmerId=${farmerId},plotId=${plotId})}" class="btn btn-primary">
+                        <i class="ph ph-plus-circle"></i> Log System Transaction
+                    </a>
+                </div>
+            </div>
+
+            <div class="stat-grid">
+                <div class="stat-card balance">
+                    <div class="stat-label">Aggregated Net Profit</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalIncome.subtract(summary.totalExpense)}">$0.00</div>
+                </div>
+                <div class="stat-card income">
+                    <div class="stat-label">Total System Revenue</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalIncome}">$0.00</div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="stat-label">Total System Costs</div>
+                    <div class="stat-value" th:text="'$' + ${summary.totalExpense}">$0.00</div>
+                </div>
+            </div>
+
+            <!-- Plot Breakdown Table -->
+            <div class="content-panel" style="margin-bottom: 2rem;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2 style="font-size:1.25rem;"><i class="ph ph-map-trifold" style="color:var(--primary); margin-right:0.5rem;"></i> Plot-by-Plot Breakdown</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Plot Identity</th>
+                                <th>Owner / Farmer</th>
+                                <th style="text-align:right;">Revenue</th>
+                                <th style="text-align:right;">Costs</th>
+                                <th style="text-align:right;">Net Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="ps : ${plotSummaries}">
+                                <td style="font-weight:600; color:var(--text-main);" th:text="${ps.plotName}">Plot A</td>
+                                <td th:text="${ps.farmerName}">Farmer Name</td>
+                                <td style="text-align:right; font-weight:600; color:var(--color-green);" th:text="'$' + ${ps.totalIncome}">$0.00</td>
+                                <td style="text-align:right; font-weight:600; color:var(--color-red);" th:text="'$' + ${ps.totalExpense}">$0.00</td>
+                                <td style="text-align:right; font-weight:700;" 
+                                    th:styleappend="${ps.totalIncome.subtract(ps.totalExpense).compareTo(T(java.math.BigDecimal).ZERO) >= 0} ? 'color:var(--color-green)' : 'color:var(--color-red)'"
+                                    th:text="${ps.totalIncome.subtract(ps.totalExpense)}">$0.00</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(plotSummaries)}">
+                                <td colspan="5" style="text-align:center; padding:3rem; color:var(--text-light); font-style:italic;">No land plots registered in the system.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="content-panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2 style="font-size:1.25rem;"><i class="ph ph-clock-counter-clockwise" style="color:var(--primary); margin-right:0.5rem;"></i> System-Wide Activity</h2>
+                    <a th:href="@{/finance/transactions}" style="font-size:0.85rem; font-weight:600; color:var(--primary); text-decoration:none;">Global Activity Log</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Service Date</th>
+                                <th style="text-align:right;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="t : ${recentTransactions}">
+                                <td style="font-weight:600; color:var(--text-main);" th:text="${t.description}">Desc</td>
+                                <td>
+                                    <span th:class="'badge ' + (${#strings.equalsIgnoreCase(t.category,'Income')} ? 'badge-income' : 'badge-expense')" 
+                                          th:text="${t.category}">Category</span>
+                                </td>
+                                <td th:text="${t.transactionDate}">2026-01-01</td>
+                                <td style="text-align:right; font-weight:700;" 
+                                    th:styleappend="${#strings.equalsIgnoreCase(t.category,'Income')} ? 'color:var(--color-green)' : 'color:var(--color-red)'"
+                                    th:text="${#strings.equalsIgnoreCase(t.category,'Income') ? '+' : '-'} + '$' + ${t.amount}">$0.00</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recentTransactions)}">
+                                <td colspan="4" style="text-align:center; padding:3rem; color:var(--text-light); font-style:italic;">No recent transactions found in the system ledger.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cards = document.querySelectorAll('.stat-card');
+        cards.forEach((card, i) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 + (i * 100));
+        });
+    });
+</script>
+</body>
+</html>
