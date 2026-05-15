@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Machinery &amp; Assets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/assets-module/assets-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="/assets" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Assets Module</div>
+            </div>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="/assets" class="nav-link active"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="/assets/register" class="nav-link"><i class="ph ph-plus-circle"></i> Register Asset</a>
+            <a href="#" class="nav-link" id="nav-details-link" onclick="alert('Select an asset from the table first.'); return false;"><i class="ph ph-info"></i> Details</a>
+            <a href="#" class="nav-link" id="nav-edit-link" onclick="alert('Select an asset from the table to edit.'); return false;"><i class="ph ph-pencil-simple"></i> Edit Details</a>
+            <a href="#" class="nav-link" id="nav-maint-link" onclick="alert('Select an asset to log maintenance.'); return false;"><i class="ph ph-wrench"></i> Maintenance</a>
+            <a href="#" class="nav-link" id="nav-decomm-link" onclick="alert('Select an asset to decommission.'); return false;"><i class="ph ph-x-square"></i> Decommission</a>
+
+            <div class="nav-section-label" style="margin-top:auto;">Account</div>
+            <a href="/assets/profile" class="nav-link"><i class="ph ph-user-circle"></i> My Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:contents;">
+                <button type="submit" class="nav-link nav-logout"><i class="ph ph-sign-out"></i> Logout</button>
+            </form>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title">Machinery &amp; Assets</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Fleet Intelligence</span>
+                </div>
+            </div>
+
+            <div class="user-profile">
+                <div class="search-bar">
+                    <i class="ph ph-magnifying-glass" id="search-btn" style="cursor:pointer;"></i>
+                    <input type="text" id="search-input" placeholder="Search assets...">
+                </div>
+                <div class="notification-icon">
+                    <i class="ph ph-bell"></i>
+                    <span class="badge"></span>
+                </div>
+                <div style="width:1px;height:32px;background:rgba(66,148,74,.12);"></div>
+                <div class="user-info">
+                    <span class="user-name">Asset Manager</span>
+                    <span class="user-role">Farm Operations</span>
+                </div>
+                <a href="/assets/profile">
+                    <img src="https://ui-avatars.com/api/?name=Asset+Manager&background=42944A&color=fff" alt="Profile" class="avatar">
+                </a>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="page-content">
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="header-titles">
+                    <div class="header-eyebrow">Fleet Management</div>
+                    <h1>Machinery &amp; Assets</h1>
+                    <p>Monitor, manage, and maintain your farm equipment.</p>
+                </div>
+                <a href="/assets/register" class="btn btn-primary">
+                    <i class="ph ph-plus"></i> Register Asset
+                </a>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="dashboard-stats">
+                <div class="stat-card">
+                    <h3 class="stat-title">Total Assets</h3>
+                    <div class="stat-value-container">
+                        <span class="stat-large" id="total-assets-val">0</span>
+                        <span class="stat-unit">units</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Available</h3>
+                    <div class="stat-value-container">
+                        <span class="stat-large text-success" id="available-val">0</span>
+                        <span class="stat-unit text-success">Ready</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">In Use</h3>
+                    <div class="stat-value-container">
+                        <span class="stat-large text-warning" id="in-use-val">0</span>
+                        <span class="stat-unit text-warning">Active</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Under Repair</h3>
+                    <div class="stat-value-container">
+                        <span class="stat-large text-danger" id="repair-val">0</span>
+                        <span class="stat-unit text-danger">Service</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <h3 class="stat-title">Decommissioned</h3>
+                    <div class="stat-value-container">
+                        <span class="stat-large text-secondary" id="decommissioned-val">0</span>
+                        <span class="stat-unit text-secondary">Inactive</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fleet Table -->
+            <div class="content-panel">
+                <div class="panel-header">
+                    <div class="panel-title-group">
+                        <h2>Machinery Fleet</h2>
+                        <span class="subtitle">Current allocation of machinery across all categories</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="assets-table">
+                        <thead>
+                            <tr>
+                                <th>Asset / Model</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Purchase Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assets-table-body">
+                            <tr><td colspan="5" class="text-center" style="padding:2rem;color:#A1B3A5;font-style:italic;">Loading assets...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/static/assets-module/assets-api.js}"></script>
+</body>
+</html>

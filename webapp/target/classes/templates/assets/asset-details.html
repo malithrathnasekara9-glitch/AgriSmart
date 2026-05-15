@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Asset Details</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/assets-module/assets-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/assets" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Assets Module</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/assets" class="nav-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="/assets/register" class="nav-link"><i class="ph ph-plus-circle"></i> Register Asset</a>
+            <a href="#" class="nav-link active" id="nav-details-link"><i class="ph ph-info"></i> Details</a>
+            <a href="#" class="nav-link" id="nav-edit-link"><i class="ph ph-pencil-simple"></i> Edit Details</a>
+            <a href="#" class="nav-link" id="nav-maint-link"><i class="ph ph-wrench"></i> Maintenance</a>
+            <a href="#" class="nav-link" id="nav-decomm-link"><i class="ph ph-x-square"></i> Decommission</a>
+            <div class="nav-section-label" style="margin-top:auto;">Account</div>
+            <a href="/assets/profile" class="nav-link"><i class="ph ph-user-circle"></i> My Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:contents;">
+                <button type="submit" class="nav-link nav-logout"><i class="ph ph-sign-out"></i> Logout</button>
+            </form>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title" id="detail-asset-title">Asset Details</div>
+                <div class="topbar-sub">
+                    <span class="status-badge available" id="detail-asset-status" style="font-size:.65rem;">Available</span>
+                    <span style="font-size:.72rem;color:#A1B3A5;" id="detail-asset-updated">Last updated: Just now</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div style="display:flex;gap:.75rem;">
+                    <button class="btn btn-primary" style="padding:.5rem 1rem;font-size:.85rem;" onclick="window.location.href='/assets/edit?id=' + getQueryParam('id')">
+                        <i class="ph ph-pencil-simple"></i> Edit
+                    </button>
+                    <button class="btn btn-outline" style="padding:.5rem 1rem;font-size:.85rem;" onclick="window.location.href='/assets/maintenance?id=' + getQueryParam('id')">
+                        <i class="ph ph-wrench"></i> Maintenance
+                    </button>
+                    <button class="btn btn-outline" style="padding:.5rem 1rem;font-size:.85rem;" onclick="window.location.href='/assets/lifecycle?id=' + getQueryParam('id')">
+                        <i class="ph ph-gear"></i> Lifecycle
+                    </button>
+                </div>
+                <div style="width:1px;height:32px;background:rgba(66,148,74,.12);"></div>
+                <a href="/assets/profile"><img src="https://ui-avatars.com/api/?name=Asset+Manager&background=42944A&color=fff" alt="Profile" class="avatar"></a>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <div style="margin-bottom:1.5rem;">
+                <a href="/assets" style="display:inline-flex;align-items:center;gap:.4rem;color:var(--text-muted);text-decoration:none;font-family:'Outfit',sans-serif;font-size:.87rem;font-weight:500;">
+                    <i class="ph ph-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+
+            <div style="display:grid;grid-template-columns:340px 1fr;gap:1.5rem;">
+
+                <!-- Basic Info Card -->
+                <div class="content-panel" style="margin-bottom:0;">
+                    <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem;">
+                        <div style="width:36px;height:36px;border-radius:.75rem;background:var(--color-blue-bg);display:flex;align-items:center;justify-content:center;color:var(--color-blue);font-size:1.1rem;">
+                            <i class="ph ph-info"></i>
+                        </div>
+                        <div style="font-family:'Outfit',sans-serif;font-size:.95rem;font-weight:600;color:#243327;">Basic Information</div>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:1.25rem;">
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Type</div>
+                            <div style="font-size:.9rem;font-weight:500;color:#243327;" id="info-type">—</div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Model</div>
+                            <div style="font-size:.9rem;font-weight:600;color:#243327;" id="info-model">—</div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Serial Number</div>
+                            <div style="font-size:.9rem;color:#627566;" id="info-sn">—</div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Purchase Date</div>
+                            <div style="font-size:.9rem;color:#627566;" id="info-purchase-date">—</div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Warranty Ends</div>
+                            <div style="font-size:.9rem;color:#627566;" id="info-warranty-end">—</div>
+                        </div>
+                        <div>
+                            <div style="font-family:'Outfit',sans-serif;font-size:.65rem;font-weight:700;color:#A1B3A5;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem;">Initial Cost</div>
+                            <div style="font-size:.9rem;font-weight:600;color:#243327;" id="info-cost">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Maintenance History -->
+                <div style="display:flex;flex-direction:column;gap:1.5rem;">
+                    <div class="content-panel" style="margin-bottom:0;">
+                        <div class="panel-header">
+                            <div class="panel-title-group">
+                                <h2><i class="ph ph-clock-counter-clockwise" style="color:var(--primary);margin-right:.5rem;"></i> Maintenance History</h2>
+                                <span class="subtitle">All service records for this asset</span>
+                            </div>
+                            <a href="#" id="view-all-maint" style="font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;color:var(--primary);text-decoration:none;">View All</a>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table" id="maintenance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Cost</th>
+                                        <th>Next Due</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="maintenance-table-body">
+                                    <tr><td colspan="5" class="text-center" style="padding:2rem;color:#A1B3A5;font-style:italic;">Loading records...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/static/assets-module/assets-api.js}"></script>
+</body>
+</html>

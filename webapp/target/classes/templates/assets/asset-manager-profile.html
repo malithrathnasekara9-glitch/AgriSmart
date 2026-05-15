@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Asset Manager Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/assets-module/assets-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <a href="/assets" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Assets Module</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/assets" class="nav-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="/assets/register" class="nav-link"><i class="ph ph-plus-circle"></i> Register Asset</a>
+            <a href="#" class="nav-link" id="nav-details-link" onclick="alert('Select an asset from the dashboard first.'); return false;"><i class="ph ph-info"></i> Details</a>
+            <a href="#" class="nav-link" id="nav-edit-link" onclick="alert('Select an asset from the dashboard to edit.'); return false;"><i class="ph ph-pencil-simple"></i> Edit Details</a>
+            <a href="#" class="nav-link" id="nav-maint-link" onclick="alert('Select an asset from the dashboard.'); return false;"><i class="ph ph-wrench"></i> Maintenance</a>
+            <a href="#" class="nav-link" id="nav-decomm-link" onclick="alert('Select an asset from the dashboard.'); return false;"><i class="ph ph-x-square"></i> Decommission</a>
+            <div class="nav-section-label" style="margin-top:auto;">Account</div>
+            <a href="/assets/profile" class="nav-link active"><i class="ph ph-user-circle"></i> My Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:contents;">
+                <button type="submit" class="nav-link nav-logout"><i class="ph ph-sign-out"></i> Logout</button>
+            </form>
+        </nav>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-content">
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title">My Profile</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Account Settings</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="notification-icon"><i class="ph ph-bell"></i><span class="badge"></span></div>
+                <div class="user-info">
+                    <span class="user-name" th:text="${manager.firstName + ' ' + manager.lastName}">Asset Manager</span>
+                    <span class="user-role">Asset Management</span>
+                </div>
+                <img th:src="|https://ui-avatars.com/api/?name=${manager.firstName}+${manager.lastName}&background=42944A&color=fff|"
+                     alt="Profile" class="avatar">
+            </div>
+        </header>
+
+        <main class="page-content" style="max-width:860px;">
+
+            <!-- Page Header -->
+            <div class="page-header" style="margin-bottom:2rem;">
+                <div class="header-titles">
+                    <div class="header-eyebrow">Account Management</div>
+                    <h1>Manager Profile</h1>
+                    <p>View and update your personal details.</p>
+                </div>
+                <a href="/assets" class="btn btn-outline"><i class="ph ph-arrow-left"></i> Back to Dashboard</a>
+            </div>
+
+            <!-- Success Alert -->
+            <div th:if="${successMessage}" class="alert-success">
+                <i class="ph-fill ph-check-circle" style="font-size:1.25rem;"></i>
+                <span th:text="${successMessage}">Profile updated successfully!</span>
+            </div>
+
+            <!-- Profile Card (matches operations/manager-profile.html design) -->
+            <div style="
+                background:var(--bg-surface);
+                border-radius:var(--radius-xl);
+                padding:2.5rem;
+                box-shadow:var(--shadow-float);
+                border:1px solid rgba(255,255,255,.9);
+                position:relative;
+                overflow:hidden;
+            ">
+                <!-- Top accent bar -->
+                <div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--primary),var(--primary-light));"></div>
+
+                <form th:action="@{/assets/profile/update}" th:object="${manager}" method="post">
+                    <input type="hidden" th:field="*{id}"/>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" style="font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.4rem;">First Name</label>
+                            <input type="text" class="form-control" th:field="*{firstName}" placeholder="First Name" maxlength="50" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" style="font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.4rem;">Last Name</label>
+                            <input type="text" class="form-control" th:field="*{lastName}" placeholder="Last Name" maxlength="50" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:1.5rem;">
+                        <label class="form-label" style="font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.4rem;">Email Address <span style="color:var(--text-light);font-weight:400;text-transform:none;">(Read-only)</span></label>
+                        <input type="email" class="form-control" th:field="*{email}" readonly
+                               style="background:#f1f5f2;color:var(--text-muted);cursor:not-allowed;border-style:dashed;">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:1.5rem;">
+                        <label class="form-label" style="font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.4rem;">Phone Number</label>
+                        <input type="tel" class="form-control"
+                               maxlength="10" minlength="10"
+                               pattern="[0-9]{10}"
+                               title="Phone number must be exactly 10 digits"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                               th:field="*{phone}" placeholder="07XXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:2.5rem;">
+                        <label class="form-label" style="font-family:'Outfit',sans-serif;font-size:.7rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-bottom:.4rem;">Physical Address</label>
+                        <textarea class="form-control" th:field="*{address}" rows="3" placeholder="Full residential/business address"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width:100%;height:50px;font-size:1rem;">
+                        <i class="ph ph-floppy-disk"></i> Save Profile Details
+                    </button>
+                </form>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const elements = document.querySelectorAll('main > *');
+        elements.forEach((el, i) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(12px)';
+            el.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+            setTimeout(() => {
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 80 + i * 60);
+        });
+    });
+</script>
+</body>
+</html>

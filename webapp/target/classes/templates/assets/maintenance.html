@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSmart – Log Maintenance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=DM+Sans:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" th:href="@{/static/assets-module/assets-style.css}">
+</head>
+<body>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <a href="/assets" class="logo" style="text-decoration:none;">
+            <div class="logo-icon"><i class="ph ph-leaf"></i></div>
+            <div>
+                <div style="font-family:'Outfit',sans-serif;font-size:1.25rem;font-weight:600;color:#243327;letter-spacing:-.02em;">AgriSmart</div>
+                <div class="logo-sub">Assets Module</div>
+            </div>
+        </a>
+        <nav class="nav-menu">
+            <a href="/assets" class="nav-link"><i class="ph ph-squares-four"></i> Dashboard</a>
+            <a href="/assets/register" class="nav-link"><i class="ph ph-plus-circle"></i> Register Asset</a>
+            <a href="#" class="nav-link" id="nav-details-link" onclick="alert('Select an asset from the dashboard first.'); return false;"><i class="ph ph-info"></i> Details</a>
+            <a href="#" class="nav-link" id="nav-edit-link" onclick="alert('Select an asset from the dashboard to edit.'); return false;"><i class="ph ph-pencil-simple"></i> Edit Details</a>
+            <a href="#" class="nav-link active" id="nav-maint-link"><i class="ph ph-wrench"></i> Maintenance</a>
+            <a href="#" class="nav-link" id="nav-decomm-link" onclick="alert('Select an asset from the dashboard.'); return false;"><i class="ph ph-x-square"></i> Decommission</a>
+            <div class="nav-section-label" style="margin-top:auto;">Account</div>
+            <a href="/assets/profile" class="nav-link"><i class="ph ph-user-circle"></i> My Profile</a>
+            <form th:action="@{/logout}" method="post" style="display:contents;">
+                <button type="submit" class="nav-link nav-logout"><i class="ph ph-sign-out"></i> Logout</button>
+            </form>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <header class="top-header">
+            <div class="top-header-left">
+                <div class="topbar-title" id="page-asset-title">Log Maintenance</div>
+                <div class="topbar-sub">
+                    <div class="live-dot"></div>
+                    <span class="topbar-sub-text">Service Records</span>
+                </div>
+            </div>
+            <div class="user-profile">
+                <div class="notification-icon"><i class="ph ph-bell"></i><span class="badge"></span></div>
+                <div class="user-info">
+                    <span class="user-name">Asset Manager</span>
+                    <span class="user-role">Farm Operations</span>
+                </div>
+                <a href="/assets/profile"><img src="https://ui-avatars.com/api/?name=Asset+Manager&background=42944A&color=fff" alt="Profile" class="avatar"></a>
+            </div>
+        </header>
+
+        <main class="page-content">
+
+            <!-- Log Form -->
+            <div class="content-panel form-panel">
+                <div class="page-header-flex" style="margin-bottom:1.75rem;">
+                    <div class="header-icon-container"><i class="ph ph-wrench"></i></div>
+                    <div class="header-titles">
+                        <div class="header-eyebrow">Fleet Maintenance</div>
+                        <h1>Log Service Record</h1>
+                        <p>Record service details for the selected asset.</p>
+                    </div>
+                </div>
+
+                <form id="log-maintenance-form-page">
+                    <input type="hidden" id="maint-asset-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maint-date">Service Date</label>
+                            <input type="date" id="maint-date" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="maint-type">Service Type</label>
+                            <select id="maint-type" class="form-control select-dropdown" required>
+                                <option value="Routine Service">Routine Service</option>
+                                <option value="Repair">Repair</option>
+                                <option value="Inspection">Inspection</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maint-desc">Description / Parts Used</label>
+                        <textarea id="maint-desc" class="form-control" rows="3" placeholder="Brief summary of maintenance performed..."></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="maint-cost">Cost ($)</label>
+                            <div class="input-with-icon prefix-icon">
+                                <span class="icon">$</span>
+                                <input type="number" id="maint-cost" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="maint-manager">Assigned Manager</label>
+                            <select id="maint-manager" class="form-control select-dropdown">
+                                <option value="">Select Manager</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maint-next">Next Service Due</label>
+                        <input type="date" id="maint-next" class="form-control">
+                    </div>
+
+                    <div class="form-actions mt-4">
+                        <a href="/assets" class="btn btn-outline"><i class="ph ph-arrow-left"></i> Cancel</a>
+                        <button type="submit" class="btn btn-primary"><i class="ph ph-floppy-disk"></i> Save Log</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Maintenance History -->
+            <div class="content-panel" style="margin-top:1.5rem;">
+                <div class="panel-header">
+                    <div class="panel-title-group">
+                        <h2><i class="ph ph-clock-counter-clockwise" style="color:var(--primary);margin-right:.5rem;"></i> Maintenance History</h2>
+                        <span class="subtitle">Full service record for this asset</span>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Cost</th>
+                                <th>Next Due</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenance-history-table-body">
+                            <tr><td colspan="5" class="text-center" style="padding:2rem;color:#A1B3A5;font-style:italic;">Loading history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/static/assets-module/assets-api.js}"></script>
+</body>
+</html>
